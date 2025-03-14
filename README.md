@@ -172,6 +172,6 @@ Sử dụng script tự động để cài đặt và chạy ứng dụng:
 Chạy lệnh sau trong terminal (Command Prompt):
 
 ```bash
-cd flask-auth-website
+cd ptud-gk-de-1
 setup.bat
 Hoặc click vào file setup.bat để chạy trực tiếp.
