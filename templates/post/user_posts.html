@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %}Bài viết của {{ user.username }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Bài viết của {{ user.username }}</h1>
+    
+    {% if current_user.is_authenticated and current_user.username == user.username %}
+    <div class="create-post">
+        <a href="{{ url_for('post.new_post') }}" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Tạo bài viết mới
+        </a>
+    </div>
+    {% endif %}
+    
+    <div class="posts-grid">
+        {% if posts %}
+            {% for post in posts %}
+                <div class="post-card">
+                    <div class="post-header">
+                        <h3 class="post-title">
+                            <a href="{{ url_for('post.post', post_id=post.id) }}">{{ post.title }}</a>
+                        </h3>
+                        <div class="post-meta">
+                            <span class="post-date">
+                                <i class="fas fa-calendar"></i> {{ post.date_posted.strftime('%d-%m-%Y') }}
+                            </span>
+                        </div>
+                    </div>
+                    
+                    {% if post.image_path %}
+                    <div class="post-detail-image">
+                        <img src="{{ url_for('static', filename=post.image_path) }}" alt="{{ post.title }}">
+                    </div>
+                    {% endif %}
+                    
+                    <div class="post-excerpt">
+                        {{ post.content[:200] }}{% if post.content|length > 200 %}...{% endif %}
+                    </div>
+                    
+                    <div class="post-footer">
+                        <a href="{{ url_for('post.post', post_id=post.id) }}" class="read-more">
+                            Đọc tiếp <i class="fas fa-arrow-right"></i>
+                        </a>
+                        
+                        {% if current_user.is_authenticated and current_user.id == post.user_id %}
+                        <div class="post-actions">
+                            <a href="{{ url_for('post.update_post', post_id=post.id) }}" class="btn btn-secondary">
+                                <i class="fas fa-edit"></i> Sửa
+                            </a>
+                            <form action="{{ url_for('post.delete_post', post_id=post.id) }}" method="POST" class="d-inline">
+                                <button type="submit" class="btn btn-danger" onclick="return confirmDelete('Bạn có chắc chắn muốn xóa bài viết này?');">
+                                    <i class="fas fa-trash"></i> Xóa
+                                </button>
+                            </form>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="no-posts">
+                <p>Chưa có bài viết nào.</p>
+                {% if current_user.is_authenticated and current_user.username == user.username %}
+                    <a href="{{ url_for('post.new_post') }}" class="btn btn-primary">Tạo bài viết</a>
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

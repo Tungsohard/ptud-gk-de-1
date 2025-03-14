@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Blog Cá Nhân{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <!-- Font Awesome để sử dụng icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <h1><a href="{{ url_for('main.index') }}">Blog Cá Nhân</a></h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="{{ url_for('main.index') }}">Trang chủ</a></li>
+                    {% if current_user.is_authenticated %}
+                        <li><a href="{{ url_for('post.new_post') }}">Đăng bài</a></li>
+                        <li><a href="{{ url_for('post.user_posts', username=current_user.username) }}">Bài viết của tôi</a></li>
+                        
+                        <!-- Menu Admin cho người dùng có quyền admin -->
+                        {% if current_user.is_admin %}
+                        <li class="user-dropdown">
+                            <a href="#" class="dropdown-toggle admin-menu-item">
+                                <i class="fas fa-shield-alt"></i> Admin <i class="fas fa-chevron-down"></i>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a href="{{ url_for('admin.dashboard') }}">
+                                    <i class="fas fa-tachometer-alt"></i> Dashboard</a>
+                                </li>
+                                <li><a href="{{ url_for('admin.users') }}">
+                                    <i class="fas fa-users"></i> Quản lý người dùng</a>
+                                </li>
+                                <li><a href="{{ url_for('admin.posts') }}">
+                                    <i class="fas fa-file-alt"></i> Quản lý bài viết</a>
+                                </li>
+                                <li><a href="{{ url_for('admin.comments') }}">
+                                    <i class="fas fa-comments"></i> Quản lý bình luận</a>
+                                </li>
+                            </ul>
+                        </li>
+                        {% endif %}
+                        
+                        <li class="user-dropdown">
+                            <a href="#" class="dropdown-toggle">
+                                <i class="fas fa-user-circle"></i> {{ current_user.username }} <i class="fas fa-chevron-down"></i>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a href="{{ url_for('post.user_posts', username=current_user.username) }}">
+                                    <i class="fas fa-user"></i> Hồ sơ</a>
+                                </li>
+                                <li><a href="{{ url_for('auth.logout') }}" class="logout-btn">
+                                    <i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
+                                </li>
+                            </ul>
+                        </li>
+                    {% else %}
+                        <li><a href="{{ url_for('auth.login') }}">
+                            <i class="fas fa-sign-in-alt"></i> Đăng nhập</a>
+                        </li>
+                        <li><a href="{{ url_for('auth.register') }}">
+                            <i class="fas fa-user-plus"></i> Đăng ký</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+        
+        <!-- Thanh trạng thái đăng nhập với liên kết trực tiếp đến trang admin -->
+        {% if current_user.is_authenticated %}
+        <div class="user-status">
+            <div class="container">
+                <div class="user-info">
+                    <i class="fas fa-user"></i> Tài khoản: <strong>{{ current_user.username }}</strong>
+                    {% if current_user.is_admin %}
+                    <span class="admin-badge"><i class="fas fa-shield-alt"></i> Admin</span>
+                    <!-- Thêm liên kết trực tiếp đến các trang admin -->
+                    <a href="{{ url_for('admin.dashboard') }}" class="admin-link">Dashboard</a>
+                    <a href="{{ url_for('admin.users') }}" class="admin-link">Quản lý người dùng</a>
+                    <a href="{{ url_for('admin.posts') }}" class="admin-link">Quản lý bài viết</a>
+                    <a href="{{ url_for('admin.comments') }}" class="admin-link">Quản lý bình luận</a>
+                    {% endif %}
+                    <a href="{{ url_for('auth.logout') }}" class="logout-link">
+                        <i class="fas fa-sign-out-alt"></i> Đăng xuất
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </header>
+
+    <main>
+        <div class="container">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">
+                            {{ message }}
+                            <span class="close-alert">&times;</span>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; {{ now.year if now else 2023 }} Blog Cá Nhân. Tất cả quyền được bảo lưu.</p>
+            <div class="social-links">
+                <a href="#"><i class="fab fa-facebook"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+    // JavaScript để xử lý dropdown menu và alerts
+    document.addEventListener('DOMContentLoaded', function() {
+        // Xử lý đóng thông báo (alerts)
+        document.querySelectorAll('.close-alert').forEach(function(elem) {
+            elem.addEventListener('click', function() {
+                this.parentElement.style.display = 'none';
+            });
+        });
+
+        // Xử lý dropdown menus
+        const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
+        
+        dropdownToggles.forEach(function(toggle) {
+            toggle.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                const dropdown = this.nextElementSibling;
+                
+                // Đóng tất cả các dropdown khác
+                document.querySelectorAll('.dropdown-menu').forEach(function(menu) {
+                    if (menu !== dropdown) {
+                        menu.style.display = 'none';
+                    }
+                });
+                
+                // Toggle dropdown hiện tại
+                if (dropdown.style.display === 'block') {
+                    dropdown.style.display = 'none';
+                } else {
+                    dropdown.style.display = 'block';
+                }
+            });
+        });
+        
+        // Đóng dropdown khi click ra ngoài
+        document.addEventListener('click', function(event) {
+            if (!event.target.matches('.dropdown-toggle') && !event.target.parentElement.matches('.dropdown-toggle')) {
+                const dropdowns = document.querySelectorAll('.dropdown-menu');
+                dropdowns.forEach(function(dropdown) {
+                    dropdown.style.display = 'none';
+                });
+            }
+        });
+    });
+    </script>
+</body>
+</html>

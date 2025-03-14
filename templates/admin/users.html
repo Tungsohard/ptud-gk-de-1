@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %}Quản lý người dùng - Admin{% endblock %}
+
+{% block content %}
+<div class="admin-container">
+    <h1>Quản lý người dùng</h1>
+    
+    <div class="admin-links">
+        <a href="{{ url_for('admin.dashboard') }}" class="btn btn-secondary">
+            <i class="fas fa-tachometer-alt"></i> Dashboard
+        </a>
+        <a href="{{ url_for('admin.posts') }}" class="btn btn-secondary">
+            <i class="fas fa-file-alt"></i> Quản lý bài viết
+        </a>
+    </div>
+    
+    <div class="admin-content">
+        {% if users %}
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Tên người dùng</th>
+                    <th>Vai trò</th>
+                    <th>Trạng thái</th>
+                    <th>Ngày tham gia</th>
+                    <th>Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr class="{% if not user.is_active %}user-inactive{% endif %}">
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.username }}</td>
+                    <td>
+                        <span class="role-badge {% if user.is_admin %}role-admin{% else %}role-user{% endif %}">
+                            {{ "Admin" if user.is_admin else "Người dùng" }}
+                        </span>
+                    </td>
+                    <td>
+                        <span class="status-badge {% if user.is_active %}status-active{% else %}status-inactive{% endif %}">
+                            {{ "Hoạt động" if user.is_active else "Bị vô hiệu" }}
+                        </span>
+                    </td>
+                    <td>{{ user.date_joined.strftime('%d-%m-%Y') if user.date_joined else 'N/A' }}</td>
+                    <td class="action-buttons">
+                        <a href="{{ url_for('post.user_posts', username=user.username) }}" class="btn btn-sm btn-info" target="_blank">
+                            <i class="fas fa-list"></i>
+                        </a>
+                        {% if not user.is_admin %}
+                        <form action="{{ url_for('admin.toggle_user_status', user_id=user.id) }}" method="POST" class="d-inline">
+                            <button type="submit" class="btn btn-sm {% if user.is_active %}btn-warning{% else %}btn-success{% endif %}">
+                                <i class="fas {% if user.is_active %}fa-ban{% else %}fa-check{% endif %}"></i>
+                            </button>
+                        </form>
+                        <form action="{{ url_for('admin.delete_user', user_id=user.id) }}" method="POST" class="d-inline">
+                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Bạn có chắc chắn muốn xóa người dùng này? Mọi bài viết của họ cũng sẽ bị xóa!');">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </form>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p class="no-items">Không có người dùng nào.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

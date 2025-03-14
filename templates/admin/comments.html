@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block title %}Quản lý bình luận - Admin{% endblock %}
+
+{% block content %}
+<div class="admin-container">
+    <h1>Quản lý bình luận</h1>
+    
+    <div class="admin-links">
+        <a href="{{ url_for('admin.dashboard') }}" class="btn btn-secondary">
+            <i class="fas fa-tachometer-alt"></i> Dashboard
+        </a>
+        <a href="{{ url_for('admin.users') }}" class="btn btn-secondary">
+            <i class="fas fa-users"></i> Quản lý người dùng
+        </a>
+        <a href="{{ url_for('admin.posts') }}" class="btn btn-secondary">
+            <i class="fas fa-file-alt"></i> Quản lý bài viết
+        </a>
+    </div>
+    
+    <div class="admin-content">
+        {% if comments %}
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nội dung</th>
+                    <th>Bài viết</th>
+                    <th>Người bình luận</th>
+                    <th>Ngày đăng</th>
+                    <th>Trạng thái</th>
+                    <th>Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for comment in comments %}
+                <tr class="{% if comment.is_hidden %}comment-hidden{% endif %}">
+                    <td>{{ comment.id }}</td>
+                    <td class="comment-content-preview">{{ comment.content[:50] }}{% if comment.content|length > 50 %}...{% endif %}</td>
+                    <td>
+                        <a href="{{ url_for('post.post', post_id=comment.post_id) }}" target="_blank">
+                            {{ comment.post.title[:30] }}{% if comment.post.title|length > 30 %}...{% endif %}
+                        </a>
+                    </td>
+                    <td>{{ comment.user.username }}</td>
+                    <td>{{ comment.date_posted.strftime('%d-%m-%Y %H:%M') }}</td>
+                    <td>
+                        <span class="status-badge {% if comment.is_hidden %}status-hidden{% else %}status-visible{% endif %}">
+                            {{ "Đã ẩn" if comment.is_hidden else "Hiển thị" }}
+                        </span>
+                    </td>
+                    <td class="action-buttons">
+                        <a href="{{ url_for('post.post', post_id=comment.post_id) }}" class="btn btn-sm btn-info" target="_blank">
+                            <i class="fas fa-eye"></i>
+                        </a>
+                        <form action="{{ url_for('admin.toggle_comment_status', comment_id=comment.id) }}" method="POST" class="d-inline">
+                            <button type="submit" class="btn btn-sm {% if comment.is_hidden %}btn-success{% else %}btn-warning{% endif %}">
+                                <i class="fas {% if comment.is_hidden %}fa-eye{% else %}fa-eye-slash{% endif %}"></i>
+                            </button>
+                        </form>
+                        <form action="{{ url_for('admin.delete_comment', comment_id=comment.id) }}" method="POST" class="d-inline">
+                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Bạn có chắc chắn muốn xóa bình luận này?');">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p class="no-items">Không có bình luận nào.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

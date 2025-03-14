@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}403 - Không có quyền truy cập{% endblock %}
+
+{% block content %}
+<div class="error-container">
+    <div class="error-code">403</div>
+    <div class="error-title">Không có quyền truy cập</div>
+    <div class="error-message">
+        <p>Rất tiếc, bạn không có quyền truy cập vào trang này.</p>
+        <p>Chỉ tài khoản quản trị viên mới có thể truy cập nội dung này.</p>
+    </div>
+    <div class="error-actions">
+        <a href="{{ url_for('main.index') }}" class="btn btn-primary">
+            <i class="fas fa-home"></i> Trở về trang chủ
+        </a>
+    </div>
+</div>
+{% endblock %}

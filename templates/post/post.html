@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+
+{% block title %}{{ post.title }}{% endblock %}
+
+{% block content %}
+<div class="post-detail">
+    <h1 class="post-title">{{ post.title }}</h1>
+    
+    <div class="post-meta">
+        <span class="post-author">
+            <i class="fas fa-user"></i> {{ post.user.username }}
+        </span>
+        <span class="post-date">
+            <i class="fas fa-calendar"></i> {{ post.date_posted.strftime('%d-%m-%Y %H:%M') }}
+        </span>
+    </div>
+    
+    {% if post.image_path %}
+    <div class="post-detail-image">
+        <img src="{{ url_for('static', filename=post.image_path) }}" alt="{{ post.title }}">
+    </div>
+    {% endif %}
+    
+    <div class="post-content">
+        {{ post.content|safe }}
+    </div>
+    
+    {% if current_user.is_authenticated and current_user.id == post.user_id %}
+    <div class="post-actions">
+        <a href="{{ url_for('post.update_post', post_id=post.id) }}" class="btn btn-primary">
+            <i class="fas fa-edit"></i> Sửa bài viết
+        </a>
+        <form action="{{ url_for('post.delete_post', post_id=post.id) }}" method="POST" class="d-inline">
+            <button type="submit" class="btn btn-danger" onclick="return confirm('Bạn có chắc chắn muốn xóa bài viết này?');">
+                <i class="fas fa-trash"></i> Xóa bài viết
+            </button>
+        </form>
+    </div>
+    {% endif %}
+
+    <!-- Phần bình luận -->
+    <div class="comments-section">
+        <h3>Bình luận ({{ comments|length }})</h3>
+        
+        {% if current_user.is_authenticated %}
+        <div class="comment-form">
+            <form method="POST" action="{{ url_for('post.add_comment', post_id=post.id) }}">
+                {{ form.hidden_tag() }}
+                <div class="form-group">
+                    {{ form.content(class="form-control", rows=3, placeholder="Viết bình luận của bạn...", maxlength=500) }}
+                    {% for error in form.content.errors %}
+                        <span class="text-danger">{{ error }}</span>
+                    {% endfor %}
+                </div>
+                <div class="form-group">
+                    {{ form.submit(class="btn btn-primary") }}
+                </div>
+            </form>
+        </div>
+        {% else %}
+        <div class="login-to-comment">
+            <p><a href="{{ url_for('auth.login') }}">Đăng nhập</a> hoặc <a href="{{ url_for('auth.register') }}">đăng ký</a> để bình luận.</p>
+        </div>
+        {% endif %}
+        
+        <div class="comments-list">
+            {% if comments %}
+                {% for comment in comments %}
+                <div class="comment-item">
+                    <div class="comment-header">
+                        <div class="comment-user">
+                            <i class="fas fa-user-circle"></i> {{ comment.user.username }}
+                        </div>
+                        <div class="comment-date">
+                            {{ comment.date_posted.strftime('%d-%m-%Y %H:%M') }}
+                        </div>
+                    </div>
+                    <div class="comment-content">
+                        {{ comment.content }}
+                    </div>
+                    
+                    {% if current_user.is_authenticated and (current_user.id == comment.user_id or current_user.is_admin) %}
+                    <div class="comment-actions">
+                        <form action="{{ url_for('post.delete_comment', comment_id=comment.id) }}" method="POST" class="d-inline">
+                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Bạn có chắc chắn muốn xóa bình luận này?');">
+                                <i class="fas fa-trash"></i> Xóa
+                            </button>
+                        </form>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            {% else %}
+                <p class="no-comments">Chưa có bình luận nào. Hãy là người đầu tiên bình luận!</p>
+            {% endif %}
+        </div>
+    </div>
+    
+    <div class="back-link">
+        <a href="{{ url_for('main.index') }}">
+            <i class="fas fa-arrow-left"></i> Trở về trang chủ
+        </a>
+    </div>
+</div>
+{% endblock %}
