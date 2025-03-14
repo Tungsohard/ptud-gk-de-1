@@ -13,3 +13,7 @@ def index():
     else:
         posts = Post.query.filter_by(is_hidden=False).join(User).filter_by(is_active=True).order_by(Post.date_posted.desc()).all()
     return render_template('index.html', posts=posts)
+
+@main_bp.route('/roles-help')
+def roles_help():
+    return render_template('user_roles_help.html')

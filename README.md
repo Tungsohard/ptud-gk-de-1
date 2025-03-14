@@ -1,46 +1,56 @@
-# Flask Authentication Website
+Blog Cá Nhân
+Dự án này là một ứng dụng blog cá nhân được xây dựng trên nền tảng Flask, cho phép người dùng đăng ký, đăng nhập, tạo và quản lý bài viết. Hệ thống cũng có trang quản trị dành cho admin để quản lý người dùng và bài viết.
 
-This project is a Flask-based web application that provides user authentication features, including registration, login, and an admin dashboard for user management.
+Tính năng chính
+Quản lý người dùng: Đăng ký, đăng nhập, đăng xuất
+Quản lý bài viết: Tạo, đọc, cập nhật, xóa bài viết
+Upload hình ảnh: Hỗ trợ upload hình ảnh cho bài viết
+Trang quản trị Admin:
+Quản lý người dùng (xóa, vô hiệu hóa tài khoản)
+Quản lý bài viết (xóa, ẩn/hiện bài viết)
+Dashboard thống kê
+Giao diện: Responsive, thân thiện với người dùng
 
-## Features
+Cấu trúc dự án
 
-- User registration and login
-- Admin dashboard for managing users
-- User management functionalities
-- Responsive design with a clean layout
+blog-ca-nhan/
+├── app.py                # Điểm khởi đầu ứng dụng
+├── config.py             # Cấu hình ứng dụng
+├── create_admin.py       # Script tạo tài khoản admin
+├── check_admin.py        # Script kiểm tra/cấp quyền admin
+├── models.py             # Mô hình cơ sở dữ liệu
+├── forms.py              # Định nghĩa các form
+├── requirements.txt      # Thư viện phụ thuộc
+├── routes/               # Các route của ứng dụng
+│   ├── __init__.py
+│   ├── admin.py          # Route quản trị
+│   ├── auth.py           # Route xác thực
+│   ├── main.py           # Route chính
+│   ├── post.py           # Route quản lý bài viết
+│   └── utils.py          # Tiện ích hỗ trợ
+├── static/               # Tài nguyên tĩnh
+│   ├── css/
+│   │   └── style.css     # File CSS chính
+│   ├── js/
+│   │   └── main.js       # JavaScript phía client
+│   └── uploads/          # Thư mục lưu hình ảnh upload
+└── templates/            # Các template HTML
+    ├── admin/            # Template cho trang admin
+    │   ├── dashboard.html
+    │   ├── posts.html
+    │   └── users.html
+    ├── auth/             # Template xác thực
+    │   ├── login.html
+    │   └── register.html
+    ├── post/             # Template quản lý bài viết
+    │   ├── create_post.html
+    │   ├── post.html
+    │   └── user_posts.html
+    ├── errors/           # Template trang lỗi
+    ├── base.html         # Template cơ sở
+    └── index.html        # Trang chủ
 
-## Project Structure
-
-```
-flask-auth-website
-├── app.py                # Entry point of the application
-├── config.py             # Configuration settings
-├── requirements.txt      # Project dependencies
-├── static                # Static files (CSS, JS)
-│   ├── css
-│   │   └── style.css     # Styles for the website
-│   └── js
-│       └── main.js       # Client-side JavaScript
-├── templates             # HTML templates
-│   ├── admin
-│   │   ├── dashboard.html # Admin dashboard template
-│   │   └── users.html    # User management template
-│   ├── auth
-│   │   ├── login.html    # Login page template
-│   │   └── register.html  # Registration page template
-│   ├── base.html         # Base template
-│   └── index.html        # Homepage template
-├── models.py             # Database models
-├── forms.py              # Form classes for registration and login
-├── routes                # Route definitions
-│   ├── __init__.py       # Initializes routes package
-│   ├── admin.py          # Admin routes
-│   ├── auth.py           # Authentication routes
-│   └── main.py           # Main application routes
-└── README.md             # Project documentation
-```
-
-## Installation
+## Cài đặt
 
 1. Clone the repository:
    ```
@@ -53,7 +63,9 @@ flask-auth-website
    pip install -r requirements.txt
    ```
 
-3. Configure the application settings in `config.py`.
+3. Create admin_user
+
+   python create_admin.py
 
 4. Run the application:
    ```

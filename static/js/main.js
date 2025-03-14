@@ -74,3 +74,40 @@ document.addEventListener('DOMContentLoaded', function() {
 function confirmDelete(message) {
     return confirm(message || 'Bạn có chắc chắn muốn xóa?');
 }// This file is intentionally left blank.
+
+// Xử lý dropdown toggle cho chọn role
+document.addEventListener('DOMContentLoaded', function() {
+    // Lấy tất cả buttons có class dropdown-toggle
+    const dropdownToggleButtons = document.querySelectorAll('.dropdown-toggle');
+    
+    // Thêm event listener cho mỗi button
+    dropdownToggleButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            // Tìm dropdown menu gần nhất
+            const dropdownMenu = this.nextElementSibling;
+            
+            // Đóng tất cả các dropdown menu khác
+            document.querySelectorAll('.dropdown-menu').forEach(menu => {
+                if (menu !== dropdownMenu) {
+                    menu.classList.remove('show');
+                }
+            });
+            
+            // Toggle class 'show' cho dropdown menu hiện tại
+            dropdownMenu.classList.toggle('show');
+        });
+    });
+    
+    // Đóng dropdown khi click ra ngoài
+    document.addEventListener('click', function(e) {
+        if (!e.target.matches('.dropdown-toggle')) {
+            const dropdowns = document.querySelectorAll('.dropdown-menu');
+            dropdowns.forEach(dropdown => {
+                dropdown.classList.remove('show');
+            });
+        }
+    });
+});

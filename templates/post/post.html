@@ -27,14 +27,19 @@
     
     {% if current_user.is_authenticated and current_user.id == post.user_id %}
     <div class="post-actions">
+        {% if current_user.is_collaborator() %}
         <a href="{{ url_for('post.update_post', post_id=post.id) }}" class="btn btn-primary">
             <i class="fas fa-edit"></i> Sửa bài viết
         </a>
+        {% endif %}
+        
+        {% if current_user.is_editor() or current_user.is_admin %}
         <form action="{{ url_for('post.delete_post', post_id=post.id) }}" method="POST" class="d-inline">
             <button type="submit" class="btn btn-danger" onclick="return confirm('Bạn có chắc chắn muốn xóa bài viết này?');">
                 <i class="fas fa-trash"></i> Xóa bài viết
             </button>
         </form>
+        {% endif %}
     </div>
     {% endif %}
 

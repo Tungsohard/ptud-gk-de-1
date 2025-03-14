@@ -8,7 +8,42 @@
     <div class="error-title">Không có quyền truy cập</div>
     <div class="error-message">
         <p>Rất tiếc, bạn không có quyền truy cập vào trang này.</p>
-        <p>Chỉ tài khoản quản trị viên mới có thể truy cập nội dung này.</p>
+        
+        <div class="permission-info">
+            <h3>Phân quyền người dùng:</h3>
+            <ul class="permission-list">
+                <li class="permission-item">
+                    <span class="role-badge role-viewer">Viewer</span>
+                    <span class="permission-desc">Chỉ có quyền xem bài viết</span>
+                </li>
+                <li class="permission-item">
+                    <span class="role-badge role-collaborator">Collaborator</span>
+                    <span class="permission-desc">Có thể tạo và chỉnh sửa bài viết của mình</span>
+                </li>
+                <li class="permission-item">
+                    <span class="role-badge role-editor">Editor</span>
+                    <span class="permission-desc">Có thể tạo, chỉnh sửa và xóa bài viết của mình</span>
+                </li>
+                <li class="permission-item">
+                    <span class="role-badge role-admin">Admin</span>
+                    <span class="permission-desc">Quản trị viên, có thể quản lý toàn bộ nội dung</span>
+                </li>
+            </ul>
+            
+            {% if current_user.is_authenticated %}
+            <div class="current-role">
+                <p>Quyền hiện tại của bạn: 
+                    <span class="role-badge 
+                    {% if current_user.is_admin %}role-admin
+                    {% elif current_user.role == 'editor' %}role-editor
+                    {% elif current_user.role == 'collaborator' %}role-collaborator
+                    {% else %}role-viewer{% endif %}">
+                    {{ "Admin" if current_user.is_admin else current_user.role|capitalize }}
+                    </span>
+                </p>
+            </div>
+            {% endif %}
+        </div>
     </div>
     <div class="error-actions">
         <a href="{{ url_for('main.index') }}" class="btn btn-primary">
@@ -16,4 +51,34 @@
         </a>
     </div>
 </div>
+
+<style>
+.permission-info {
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 5px;
+    margin: 20px 0;
+}
+
+.permission-list {
+    list-style: none;
+    padding: 0;
+}
+
+.permission-item {
+    margin: 10px 0;
+    display: flex;
+    align-items: center;
+}
+
+.permission-desc {
+    margin-left: 10px;
+}
+
+.current-role {
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid #ddd;
+}
+</style>
 {% endblock %}

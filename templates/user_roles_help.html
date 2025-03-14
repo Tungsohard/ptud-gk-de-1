@@ -1,0 +1,229 @@
+{% extends "base.html" %}
+
+{% block title %}Hướng dẫn phân quyền người dùng{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="roles-help">
+        <h1>Hướng dẫn phân quyền người dùng</h1>
+        <p class="roles-intro">
+            Blog Cá Nhân có hệ thống phân quyền người dùng để đảm bảo an toàn và quản lý
+            nội dung hiệu quả. Mỗi người dùng sẽ được gán một trong các vai trò sau:
+        </p>
+        
+        <div class="roles-grid">
+            <div class="role-card">
+                <div class="role-header role-viewer">
+                    <h3>Viewer</h3>
+                    <i class="fas fa-eye role-icon"></i>
+                </div>
+                <div class="role-body">
+                    <h4>Quyền hạn:</h4>
+                    <ul>
+                        <li><i class="fas fa-check"></i> Xem tất cả bài viết công khai</li>
+                        <li><i class="fas fa-check"></i> Bình luận bài viết</li>
+                        <li><i class="fas fa-times"></i> Không thể tạo bài viết mới</li>
+                        <li><i class="fas fa-times"></i> Không thể chỉnh sửa bài viết</li>
+                    </ul>
+                    <p class="role-desc">Đây là quyền mặc định cho mọi người dùng mới đăng ký.</p>
+                </div>
+            </div>
+            
+            <div class="role-card">
+                <div class="role-header role-collaborator">
+                    <h3>Collaborator</h3>
+                    <i class="fas fa-edit role-icon"></i>
+                </div>
+                <div class="role-body">
+                    <h4>Quyền hạn:</h4>
+                    <ul>
+                        <li><i class="fas fa-check"></i> Tất cả quyền của Viewer</li>
+                        <li><i class="fas fa-check"></i> Tạo bài viết mới</li>
+                        <li><i class="fas fa-check"></i> Chỉnh sửa bài viết của mình</li>
+                        <li><i class="fas fa-times"></i> Không thể xóa bài viết</li>
+                    </ul>
+                    <p class="role-desc">Phù hợp với người dùng thường xuyên đăng bài.</p>
+                </div>
+            </div>
+            
+            <div class="role-card">
+                <div class="role-header role-editor">
+                    <h3>Editor</h3>
+                    <i class="fas fa-trash-alt role-icon"></i>
+                </div>
+                <div class="role-body">
+                    <h4>Quyền hạn:</h4>
+                    <ul>
+                        <li><i class="fas fa-check"></i> Tất cả quyền của Collaborator</li>
+                        <li><i class="fas fa-check"></i> Xóa bài viết của mình</li>
+                        <li><i class="fas fa-times"></i> Không thể quản lý người dùng khác</li>
+                    </ul>
+                    <p class="role-desc">Phù hợp với người dùng thường xuyên đóng góp nội dung chất lượng.</p>
+                </div>
+            </div>
+            
+            <div class="role-card">
+                <div class="role-header role-admin">
+                    <h3>Admin</h3>
+                    <i class="fas fa-shield-alt role-icon"></i>
+                </div>
+                <div class="role-body">
+                    <h4>Quyền hạn:</h4>
+                    <ul>
+                        <li><i class="fas fa-check"></i> Tất cả các quyền</li>
+                        <li><i class="fas fa-check"></i> Quản lý người dùng</li>
+                        <li><i class="fas fa-check"></i> Quản lý tất cả bài viết</li>
+                        <li><i class="fas fa-check"></i> Quản lý bình luận</li>
+                        <li><i class="fas fa-check"></i> Phân quyền người dùng</li>
+                    </ul>
+                    <p class="role-desc">Quyền cao nhất, dành cho quản trị viên của hệ thống.</p>
+                </div>
+            </div>
+        </div>
+        
+        {% if current_user.is_authenticated %}
+        <div class="current-user-role">
+            <h3>Quyền của bạn</h3>
+            <div class="user-role-info">
+                <p>Tài khoản: <strong>{{ current_user.username }}</strong></p>
+                <p>Vai trò hiện tại: 
+                    <span class="role-badge 
+                    {% if current_user.is_admin %}role-admin
+                    {% elif current_user.role == 'editor' %}role-editor
+                    {% elif current_user.role == 'collaborator' %}role-collaborator
+                    {% else %}role-viewer{% endif %}">
+                    {{ "Admin" if current_user.is_admin else current_user.role|capitalize }}
+                    </span>
+                </p>
+                <p>Để được nâng cấp quyền, vui lòng liên hệ quản trị viên.</p>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+.roles-help {
+    background: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.roles-intro {
+    margin-bottom: 30px;
+    line-height: 1.6;
+    font-size: 1.1rem;
+}
+
+.roles-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 25px;
+    margin: 30px 0;
+}
+
+.role-card {
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.role-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+}
+
+.role-header {
+    padding: 15px;
+    color: white;
+    position: relative;
+    text-align: center;
+}
+
+.role-header h3 {
+    margin: 0;
+    font-size: 1.4rem;
+}
+
+.role-icon {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.8rem;
+    opacity: 0.7;
+}
+
+.role-viewer {
+    background-color: #6c757d;
+}
+
+.role-collaborator {
+    background-color: #17a2b8;
+}
+
+.role-editor {
+    background-color: #28a745;
+}
+
+.role-admin {
+    background-color: #343a40;
+}
+
+.role-body {
+    padding: 20px;
+}
+
+.role-body h4 {
+    margin-top: 0;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+}
+
+.role-body ul {
+    padding-left: 20px;
+    margin-bottom: 20px;
+}
+
+.role-body li {
+    margin-bottom: 8px;
+    list-style: none;
+}
+
+.role-body .fa-check {
+    color: #28a745;
+    margin-right: 8px;
+}
+
+.role-body .fa-times {
+    color: #dc3545;
+    margin-right: 8px;
+}
+
+.role-desc {
+    font-style: italic;
+    color: #6c757d;
+    margin-top: 15px;
+}
+
+.current-user-role {
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    margin-top: 30px;
+}
+
+.user-role-info {
+    margin-top: 15px;
+}
+
+@media (max-width: 768px) {
+    .roles-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+{% endblock %}

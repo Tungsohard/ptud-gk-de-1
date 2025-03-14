@@ -109,8 +109,12 @@
         </div>
     </main>
 
-    <footer>
+        <footer>
         <div class="container">
+            <div class="footer-links">
+                <a href="{{ url_for('main.index') }}">Trang chủ</a>
+                <a href="{{ url_for('main.roles_help') }}">Phân quyền người dùng</a>
+            </div>
             <p>&copy; {{ now.year if now else 2023 }} Blog Cá Nhân. Tất cả quyền được bảo lưu.</p>
             <div class="social-links">
                 <a href="#"><i class="fab fa-facebook"></i></a>

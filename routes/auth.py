@@ -1,8 +1,8 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, request
 from flask_login import login_user, logout_user, login_required, current_user
-from werkzeug.security import generate_password_hash, check_password_hash
-from models import User, db
+from models import db, User
 from forms import LoginForm, RegistrationForm
+from werkzeug.security import generate_password_hash
 from datetime import datetime
 
 auth_bp = Blueprint('auth', __name__)
@@ -15,18 +15,26 @@ def login():
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data).first()
-        if user and user.check_password(form.password.data):
-            if not hasattr(user, 'is_active') or user.is_active:
-                # Lỗi: form.remember.data không tồn tại trong LoginForm
-                login_user(user)  # Xóa remember=form.remember.data
-                next_page = request.args.get('next')
-                flash('Đăng nhập thành công!', 'success')
-                return redirect(next_page or url_for('main.index'))
-            else:
-                flash('Tài khoản đã bị vô hiệu hóa. Vui lòng liên hệ quản trị viên.', 'danger')
-        else:
-            flash('Đăng nhập thất bại. Kiểm tra lại tên đăng nhập và mật khẩu.', 'danger')
+        
+        if not user:
+            flash('Tên đăng nhập không tồn tại.', 'danger')
+            return render_template('auth/login.html', form=form)
             
+        if not user.check_password(form.password.data):
+            flash('Mật khẩu không chính xác.', 'danger')
+            return render_template('auth/login.html', form=form)
+            
+        if not user.is_active:
+            flash('Tài khoản của bạn đã bị vô hiệu hóa.', 'danger')
+            return render_template('auth/login.html', form=form)
+            
+        login_user(user, remember=form.remember.data)
+        
+        next_page = request.args.get('next')
+        if next_page:
+            return redirect(next_page)
+        return redirect(url_for('main.index'))
+        
     return render_template('auth/login.html', form=form)
 
 @auth_bp.route('/register', methods=['GET', 'POST'])
@@ -48,7 +56,8 @@ def register():
             password=hashed_password,
             is_admin=False, 
             is_active=True,
-            date_joined=datetime.utcnow()
+            date_joined=datetime.utcnow(),
+            role='viewer'  # Mặc định là viewer
         )
         
         db.session.add(new_user)
@@ -63,5 +72,5 @@ def register():
 @login_required
 def logout():
     logout_user()
-    flash('Đã đăng xuất thành công!', 'success')
-    return redirect(url_for('main.index'))
+    flash('Bạn đã đăng xuất thành công.', 'info')
+    return redirect(url_for('auth.login'))
