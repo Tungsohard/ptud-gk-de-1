@@ -90,8 +90,8 @@ flask-auth-website/
 | **Viewer**     | Chỉ có quyền xem bài viết và bình luận |
 | **Collaborator** | Có thể tạo và chỉnh sửa bài viết của mình |
 | **Editor**     | Có thể tạo, chỉnh sửa và xóa bài viết của mình |
-| **Admin**      | Có mọi quyền trên hệ thống - Là người trao quyền                          (Viewer/Collaborator/Editor) cho user  |
-
+| **Admin**      | Có mọi quyền trên hệ thống  |
+| **Admin**      | - Là người trao quyền (Viewer/Collaborator/Editor) cho user  |
 
 ## Cài đặt và chạy
 
@@ -101,4 +101,7 @@ Sử dụng script tự động để cài đặt và chạy ứng dụng:
 #### Windows
 Chạy lệnh sau trong terminal (Command Prompt):
 ```sh
+cd flask-auth-website
 setup.bat
+
+## hoặc Click vào file setup.bat để chạy trực tiếp
