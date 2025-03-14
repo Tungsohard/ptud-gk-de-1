@@ -1,82 +1,104 @@
-Blog Cá Nhân
-Dự án này là một ứng dụng blog cá nhân được xây dựng trên nền tảng Flask, cho phép người dùng đăng ký, đăng nhập, tạo và quản lý bài viết. Hệ thống cũng có trang quản trị dành cho admin để quản lý người dùng và bài viết.
+# Blog Cá Nhân
+# Tên: Nguyễn Văn Tùng-22647011
 
-Tính năng chính
-Quản lý người dùng: Đăng ký, đăng nhập, đăng xuất
-Quản lý bài viết: Tạo, đọc, cập nhật, xóa bài viết
-Upload hình ảnh: Hỗ trợ upload hình ảnh cho bài viết
-Trang quản trị Admin:
-Quản lý người dùng (xóa, vô hiệu hóa tài khoản)
-Quản lý bài viết (xóa, ẩn/hiện bài viết)
-Dashboard thống kê
-Giao diện: Responsive, thân thiện với người dùng
+Ứng dụng blog cá nhân xây dựng trên Flask với hệ thống quản lý người dùng, bài viết, bình luận và phân quyền người dùng.
 
-Cấu trúc dự án
+## Tính năng chính
 
-blog-ca-nhan/
-├── app.py                # Điểm khởi đầu ứng dụng
-├── config.py             # Cấu hình ứng dụng
-├── create_admin.py       # Script tạo tài khoản admin
-├── check_admin.py        # Script kiểm tra/cấp quyền admin
-├── models.py             # Mô hình cơ sở dữ liệu
-├── forms.py              # Định nghĩa các form
-├── requirements.txt      # Thư viện phụ thuộc
-├── routes/               # Các route của ứng dụng
+- **Hệ thống tài khoản người dùng**
+  - Đăng ký, đăng nhập, đăng xuất
+  - Ghi nhớ đăng nhập
+  - Phân quyền 4 cấp độ: Viewer, Collaborator, Editor và Admin
+
+- **Quản lý bài viết**
+  - Tạo, xem, chỉnh sửa và xóa bài viết
+  - Upload hình ảnh cho bài viết
+  - Phân loại quyền truy cập với từng thao tác
+
+- **Hệ thống bình luận**
+  - Bình luận bài viết
+  - Quản lý bình luận (xóa, ẩn/hiện)
+
+- **Trang quản trị admin**
+  - Dashboard thống kê
+  - Quản lý người dùng (xóa, vô hiệu hóa, phân quyền)
+  - Quản lý bài viết (xóa, ẩn/hiện)
+  - Quản lý bình luận (xóa, ẩn/hiện)
+
+- **Giao diện**
+  - Responsive design
+  - Thân thiện với người dùng
+  - Tương thích với nhiều thiết bị
+
+## Công nghệ sử dụng
+
+- **Back-end**: Python, Flask
+- **Database**: SQLite, SQLAlchemy ORM
+- **Authentication**: Flask-Login
+- **Forms**: Flask-WTF
+- **Front-end**: HTML, CSS, JavaScript, Font Awesome
+
+## Cấu trúc dự án
+
+flask-auth-website/
+├── app.py                   # Điểm khởi đầu ứng dụng
+├── config.py                # Cấu hình ứng dụng
+├── create_admin.py          # Script tạo tài khoản admin
+├── check_admin.py           # Script kiểm tra/cấp quyền admin
+├── update_roles.py          # Script cập nhật hệ thống phân quyền
+├── models.py                # Mô hình cơ sở dữ liệu
+├── forms.py                 # Định nghĩa các form
+├── requirements.txt         # Thư viện phụ thuộc
+├── setup.bat                # Script cài đặt tự động (Windows)
+├── setup.sh                 # Script cài đặt tự động (Linux/Mac)
+├── routes/                  # Các route của ứng dụng
 │   ├── __init__.py
-│   ├── admin.py          # Route quản trị
-│   ├── auth.py           # Route xác thực
-│   ├── main.py           # Route chính
-│   ├── post.py           # Route quản lý bài viết
-│   └── utils.py          # Tiện ích hỗ trợ
-├── static/               # Tài nguyên tĩnh
+│   ├── admin.py             # Route quản trị
+│   ├── auth.py              # Route xác thực
+│   ├── main.py              # Route chính
+│   ├── post.py              # Route quản lý bài viết
+│   └── utils.py             # Tiện ích hỗ trợ
+├── static/                  # Tài nguyên tĩnh
 │   ├── css/
-│   │   └── style.css     # File CSS chính
+│   │   └── style.css        # File CSS chính
 │   ├── js/
-│   │   └── main.js       # JavaScript phía client
-│   └── uploads/          # Thư mục lưu hình ảnh upload
-└── templates/            # Các template HTML
-    ├── admin/            # Template cho trang admin
+│   │   └── main.js          # JavaScript phía client
+│   └── uploads/             # Thư mục lưu hình ảnh bài viết
+└── templates/               # Các template HTML
+    ├── admin/               # Template cho trang admin
     │   ├── dashboard.html
     │   ├── posts.html
-    │   └── users.html
-    ├── auth/             # Template xác thực
+    │   ├── users.html
+    │   └── comments.html
+    ├── auth/                # Template xác thực
     │   ├── login.html
     │   └── register.html
-    ├── post/             # Template quản lý bài viết
+    ├── post/                # Template quản lý bài viết
     │   ├── create_post.html
     │   ├── post.html
     │   └── user_posts.html
-    ├── errors/           # Template trang lỗi
-    ├── base.html         # Template cơ sở
-    └── index.html        # Trang chủ
+    ├── errors/              # Template trang lỗi
+    │   └── 403.html
+    ├── base.html            # Template cơ sở
+    ├── index.html           # Trang chủ
+    └── user_roles_help.html
 
-## Cài đặt
 
-1. Clone the repository:
-   ```
-   git clone <repository-url>
-   cd flask-auth-website
-   ```
+## Hệ thống phân quyền
+| Quyền           | Mô tả |
+|----------------|------------------------------------------|
+| **Viewer**     | Chỉ có quyền xem bài viết và bình luận |
+| **Collaborator** | Có thể tạo và chỉnh sửa bài viết của mình |
+| **Editor**     | Có thể tạo, chỉnh sửa và xóa bài viết của mình |
+| **Admin**      | Có mọi quyền trên hệ thống - Là người trao quyền                          (Viewer/Collaborator/Editor) cho user  |
 
-2. Install the required dependencies:
-   ```
-   pip install -r requirements.txt
-   ```
 
-3. Create admin_user
+## Cài đặt và chạy
 
-   python create_admin.py
+### Cài đặt tự động
+Sử dụng script tự động để cài đặt và chạy ứng dụng:
 
-4. Run the application:
-   ```
-   python app.py
-   ```
-
-## Usage
-
-- Navigate to the homepage to access the registration and login pages.
-- Admin users can access the dashboard to manage user accounts.
-
-## License
-
-This project is licensed under the MIT License.
+#### Windows
+Chạy lệnh sau trong terminal (Command Prompt):
+```sh
+setup.bat
