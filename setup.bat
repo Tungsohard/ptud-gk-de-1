@@ -7,7 +7,7 @@ echo              CAI DAT BLOG CA NHAN
 echo ======================================================
 
 rem Kiem tra Python da duoc cai dat chua
-echo [1/8] Kiem tra cai dat Python...
+echo [1/9] Kiem tra cai dat Python...
 where python >nul 2>&1
 if %ERRORLEVEL% NEQ 0 (
     echo [LOI] Python chua duoc cai dat. Vui long cai dat Python 3.7 tro len.
@@ -19,7 +19,7 @@ echo [OK] %PYTHON_VERSION% da duoc cai dat.
 
 rem Tao va kich hoat moi truong ao
 echo.
-echo [2/8] Tao moi truong ao Python...
+echo [2/9] Tao moi truong ao Python...
 if exist venv\ (
     echo Moi truong ao da ton tai. Su dung moi truong hien co.
 ) else (
@@ -33,7 +33,7 @@ if exist venv\ (
 
 rem Kich hoat moi truong ao
 echo.
-echo [3/8] Kich hoat moi truong ao...
+echo [3/9] Kich hoat moi truong ao...
 call venv\Scripts\activate
 if %ERRORLEVEL% NEQ 0 (
     echo [LOI] Khong the kich hoat moi truong ao.
@@ -43,13 +43,13 @@ echo [OK] Da kich hoat moi truong ao.
 
 rem Nang cap pip
 echo.
-echo [4/8] Nang cap pip...
+echo [4/9] Nang cap pip...
 python -m pip install --upgrade pip
 echo [OK] Da nang cap pip.
 
 rem Cai dat cac thu vien can thiet
 echo.
-echo [5/8] Cai dat cac thu vien can thiet...
+echo [5/9] Cai dat cac thu vien can thiet...
 pip install -r requirements.txt
 if %ERRORLEVEL% NEQ 0 (
     echo [LOI] Co loi khi cai dat thu vien.
@@ -57,22 +57,40 @@ if %ERRORLEVEL% NEQ 0 (
 )
 echo [OK] Da cai dat thu vien thanh cong.
 
-rem Tao thu muc uploads neu chua co
+rem Cap nhat WTForms va Flask-WTF de tranh loi cgi.escape
 echo.
-echo [6/8] Kiem tra va tao thu muc uploads...
+echo [6/9] Cap nhat WTForms va Flask-WTF...
+pip install --upgrade wtforms flask-wtf
+if %ERRORLEVEL% NEQ 0 (
+    echo [LOI] Co loi khi cap nhat WTForms hoac Flask-WTF.
+    exit /b 1
+)
+echo [OK] Da cap nhat WTForms va Flask-WTF.
+
+rem Kiem tra va tao thu muc uploads
+echo.
+echo [7/9] Kiem tra va tao thu muc uploads...
 if not exist static\uploads mkdir static\uploads
 echo [OK] Da kiem tra thu muc uploads.
 
 rem Cap nhat database va them cot role
 echo.
-echo [7/8] Cap nhat co so du lieu...
+echo [8/9] Cap nhat co so du lieu...
 python update_roles.py
+if %ERRORLEVEL% NEQ 0 (
+    echo [LOI] Khong the cap nhat co so du lieu.
+    exit /b 1
+)
 echo [OK] Da cap nhat co so du lieu.
 
 rem Tao tai khoan admin
 echo.
-echo [8/8] Kiem tra va tao tai khoan admin...
+echo [9/9] Kiem tra va tao tai khoan admin...
 python create_admin.py
+if %ERRORLEVEL% NEQ 0 (
+    echo [LOI] Khong the tao tai khoan admin.
+    exit /b 1
+)
 echo [OK] Da kiem tra tai khoan admin.
 
 rem Hien thi thong tin
