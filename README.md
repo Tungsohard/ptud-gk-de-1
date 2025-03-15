@@ -173,5 +173,5 @@ Chạy lệnh sau trong terminal (Command Prompt):
 
 ```bash
 cd ptud-gk-de-1
-setup.bat
+.\setup.bat
 Hoặc click vào file setup.bat để chạy trực tiếp.
