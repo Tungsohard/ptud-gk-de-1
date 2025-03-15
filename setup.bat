@@ -34,7 +34,7 @@ if exist venv\ (
 rem Kich hoat moi truong ao
 echo.
 echo [3/9] Kich hoat moi truong ao...
-call venv\Scripts\activate
+call venv\Scripts\activate.bat
 if %ERRORLEVEL% NEQ 0 (
     echo [LOI] Khong the kich hoat moi truong ao.
     exit /b 1
@@ -52,10 +52,22 @@ echo.
 echo [5/9] Cai dat cac thu vien can thiet...
 pip install -r requirements.txt
 if %ERRORLEVEL% NEQ 0 (
-    echo [LOI] Co loi khi cai dat thu vien.
-    exit /b 1
+    echo [LOI] Co loi khi cai dat thu vien. Thu thu nghiem lai.
+    set /p retry="Ban co muon thu cai dat lai (y/n)? "
+    if /i "%retry%"=="y" (
+        pip install -r requirements.txt
+        if %ERRORLEVEL% NEQ 0 (
+            echo [LOI] Cai dat thu vien khong thanh cong.
+            exit /b 1
+        )
+        echo [OK] Da cai dat thu vien thanh cong.
+    ) else (
+        echo [LOI] Cai dat thu vien khong thanh cong.
+        exit /b 1
+    )
+) else (
+    echo [OK] Da cai dat thu vien thanh cong.
 )
-echo [OK] Da cai dat thu vien thanh cong.
 
 rem Cap nhat WTForms va Flask-WTF de tranh loi cgi.escape
 echo.
